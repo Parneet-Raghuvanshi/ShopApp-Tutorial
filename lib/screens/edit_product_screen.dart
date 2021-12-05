@@ -36,11 +36,18 @@ class _EditProductScreenState extends State<EditProductScreen> {
 
   void _updateImageUrl() {
     if (!_imageUrlFocusNode.hasFocus) {
+      var value = _imageUrlController.text;
+      if ((!value.startsWith("http") && !value.startsWith("https")) ||
+          (!value.endsWith(".jpg") &&
+              !value.endsWith(".jpeg") &&
+              !value.endsWith(".png"))) return;
       setState(() {});
     }
   }
 
   void _saveForm() {
+    final isValid = _form.currentState!.validate();
+    if (!isValid) return;
     _form.currentState?.save();
     print(_editedProduct.title);
     print(_editedProduct.description);
@@ -69,6 +76,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 textInputAction: TextInputAction.next,
                 onFieldSubmitted: (value) =>
                     FocusScope.of(context).requestFocus(_priceFocusNode),
+                validator: (value) {
+                  if (value!.isEmpty) return "Input can't be null";
+                  if (value.length > 50) return "Title length exceeded";
+                  return null;
+                },
                 onSaved: (newValue) {
                   _editedProduct = Product(
                       id: _editedProduct.id,
@@ -85,6 +97,14 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 focusNode: _priceFocusNode,
                 onFieldSubmitted: (value) =>
                     FocusScope.of(context).requestFocus(_descFocusNode),
+                validator: (value) {
+                  if (value!.isEmpty) return "Input can't be null";
+                  if (double.tryParse(value) == null)
+                    return "Please enter a valid price";
+                  if (double.parse(value) <= 0)
+                    return "Please enter a number greater then 0";
+                  return null;
+                },
                 onSaved: (newValue) {
                   _editedProduct = Product(
                       id: _editedProduct.id,
@@ -99,6 +119,11 @@ class _EditProductScreenState extends State<EditProductScreen> {
                 maxLines: 3,
                 keyboardType: TextInputType.multiline,
                 focusNode: _descFocusNode,
+                validator: (value) {
+                  if (value!.isEmpty) return "Input can't be null";
+                  if (value.length <= 10) return "Description too short";
+                  return null;
+                },
                 onSaved: (newValue) {
                   _editedProduct = Product(
                       id: _editedProduct.id,
@@ -135,6 +160,17 @@ class _EditProductScreenState extends State<EditProductScreen> {
                       controller: _imageUrlController,
                       focusNode: _imageUrlFocusNode,
                       onFieldSubmitted: (_) => _saveForm(),
+                      validator: (value) {
+                        if (value!.isEmpty) return "Input can't be null";
+                        if (!value.startsWith("http") &&
+                            !value.startsWith("https"))
+                          return "Enter a valid url";
+                        if (!value.endsWith(".jpg") &&
+                            !value.endsWith(".jpeg") &&
+                            !value.endsWith(".png"))
+                          return "Enter a valid format";
+                        return null;
+                      },
                       onSaved: (newValue) {
                         _editedProduct = Product(
                             id: _editedProduct.id,
