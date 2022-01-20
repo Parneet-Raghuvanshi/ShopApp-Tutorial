@@ -42,10 +42,10 @@ class _EditProductScreenState extends State<EditProductScreen> {
   void didChangeDependencies() {
     // TODO: implement didChangeDependencies
     if (_isInit) {
-      final productId = ModalRoute.of(context)!.settings.arguments as String;
+      final productId = ModalRoute.of(context)!.settings.arguments;
       if (productId != null) {
-        _editedProduct =
-            Provider.of<Products>(context, listen: false).findById(productId);
+        _editedProduct = Provider.of<Products>(context, listen: false)
+            .findById(productId.toString());
         _initValues = {
           'title': _editedProduct.title,
           'description': _editedProduct.description,
@@ -66,7 +66,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
     _priceFocusNode.dispose();
     _descFocusNode.dispose();
     _imageUrlController.dispose();
-    _imageUrlController.dispose();
     super.dispose();
   }
 
@@ -85,7 +84,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     final isValid = _form.currentState!.validate();
     if (!isValid) return;
     _form.currentState?.save();
-    if (_editedProduct.id != null) {
+    if (_editedProduct.id != '') {
       Provider.of<Products>(context, listen: false).updateProduct(
         _editedProduct.id,
         _editedProduct,
