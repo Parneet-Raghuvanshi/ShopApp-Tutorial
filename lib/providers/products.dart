@@ -130,7 +130,7 @@ class Products with ChangeNotifier {
     final response = await http.delete(Uri.https(
         "shopapp-57c03-default-rtdb.firebaseio.com", "products/$id.json"));
     if (response.statusCode >= 400) {
-      _items.insert(existingProductIndex, existingProduct!);
+      _items.insert(existingProductIndex, existingProduct);
       notifyListeners();
       throw HttpException('Could not delete Product!');
     }
