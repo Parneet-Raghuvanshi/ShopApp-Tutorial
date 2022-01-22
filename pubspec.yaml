@@ -82,6 +82,7 @@ flutter:
   # see https://flutter.dev/custom-fonts/#from-packages
   assets:
     - .env
+    - assets/images/product-placeholder.png
 
   fonts:
     - family: Lato
